@@ -11,7 +11,16 @@ async function main() {
     const titleIssue = core.getInput("title_for_find_issue");
     const titleContent = core.getInput("title_for_find_content");
 
-    const pullContent = github.context.payload?.pull_request?.body;
+    if (github.context.payload.pull_request === undefined) {
+        core.setFailed("the event which trigger this workflow must is pull_request or pull_request_target")
+        return 
+    }
+
+    const {data: pull} = await oc.rest.pulls.get({
+        ...github.context.repo,
+        pull_number: github.context.payload.pull_request.number
+    })
+    const pullContent = pull.body;
     if (pullContent === undefined || pullContent.length == 0) {
         core.setFailed(`this request is not pull_request or the body of this pull_request is empty`);
     }
