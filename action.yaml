@@ -1,0 +1,27 @@
+name: Check Pull Valid
+description: Check Pull Valid
+author: guguducken
+
+inputs:
+  github_token:
+    description: 'The user GitHub token for get data'
+    required: true
+  title_for_find_issue:
+    description: 'title for find issue'
+    default: ""
+    required: false
+  title_for_find_content: 
+    description: 'title for find content'
+    default: ""
+    required: false
+
+outputs:
+  pull_valid:
+    description: 'The result of this PR valid check'
+
+runs:
+  using: 'node16'
+  main: 'src/index.js'
+branding:
+  icon: "arrow-down"
+  color: "blue"
