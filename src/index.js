@@ -51,7 +51,7 @@ async function main() {
     core.setOutput("pull_valid", `${issueIsValid || contentIsValid}`)
 }
 
-async function checkIssueValid(issueContent: String) {
+async function checkIssueValid(issueContent) {
     // check issue in this repo
     let regSlef = /#[0-9]+/igm
     let result = issueContent.match(regSlef)
