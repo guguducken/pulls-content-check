@@ -51,11 +51,11 @@ async function main() {
     core.setOutput("pull_valid", `${issueIsValid || contentIsValid}`)
 }
 
-async function checkIssueValid(issueContent) {
+async function checkIssueValid(issueContent: String) {
     // check issue in this repo
     let regSlef = /#[0-9]+/igm
     let result = issueContent.match(regSlef)
-    if (result !== null && result.length != 0) {
+    if (result?.length != 0) {
         // check weather issue number is valid
         for (let i = 0; i < result.length; i++) {
             // remove prefix #
@@ -87,7 +87,7 @@ async function checkIssueValid(issueContent) {
             issue_number: otherIssue.value[3]
         });
         if (status == 200 && data.pull_request === undefined) {
-            console.log("issue " + chalk.red(`${issue}`) + " in other repo " + chalk.greenBright(`${ otherIssue.value[1]}/${ otherIssue.value[2]}`) + " is valid, so return true")
+            console.log("issue " + chalk.red(`${otherIssue.value[3]}`) + " in other repo " + chalk.greenBright(`${ otherIssue.value[1]}/${ otherIssue.value[2]}`) + " is valid, so return true")
             return true
         }
         otherIssue = resultOtherRepo.next();
