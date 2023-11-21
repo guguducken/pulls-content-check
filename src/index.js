@@ -107,7 +107,7 @@ function drumpToNextHeading(tree, ind) {
 
 function checkContentValid(messageContent) {
     console.log("pull message is: " + chalk.greenBright(messageContent));
-    messageContent = messageContent.replace("debug", "").replace("fix", "").replace(/[!"#$%&'()*+,-./:;<=>?@\[\]\^_`{|}~ \\]/igm, "")
+    messageContent = messageContent.replace("debug", "").replace("fix", "").replace(/[!"#$%&'()*+,-./:;<=>?@\[\]\^_`{|}~ \\]/igm, "").replace(/<img.*>/,"img")
     console.log(messageContent.length)
     if (messageContent.length >= 3) {
         return true
