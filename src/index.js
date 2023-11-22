@@ -49,6 +49,9 @@ async function main() {
     }
 
     core.setOutput("pull_valid", `${issueIsValid || contentIsValid}`)
+    if (! (issueIsValid || contentIsValid)) {
+        core.setFailed(chalk.red("ERROR: ") + "please add releated issue number(url) under heading " + chalk.greenBright(titleIssue) + " or describe the motive of this PR under heading " + chalk.greenBright(titleContent))
+    }
 }
 
 async function checkIssueValid(issueContent) {
