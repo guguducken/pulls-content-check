@@ -25,6 +25,8 @@ async function main() {
         core.setFailed(`this request is not pull_request or the body of this pull_request is empty`);
     }
 
+    console.log("pull content is :" + pullContent)
+
     let issueIsValid = true
     let contentIsValid = true
 
