@@ -105,7 +105,9 @@ async function checkIssueValid(issueContent) {
 }
 
 function drumpToNextHeading(tree, ind) {
-    let content = toString(tree.children[ind]);
+    let content = toString(tree.children[ind],{
+        includeHtml: false,
+    });
     while (ind + 1 < tree.children.length && tree.children[ind + 1].type != "heading") {
         content += " " + toString(tree.children[++ind],{
             includeHtml: false,
