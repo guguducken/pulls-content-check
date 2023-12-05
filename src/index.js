@@ -55,6 +55,8 @@ async function main() {
 }
 
 async function checkIssueValid(issueContent) {
+    console.log("issue content is: " + chalk.greenBright(issueContent))
+
     // check issue in this repo
     let regSlef = /#[0-9]+/igm
     let result = issueContent.match(regSlef)
