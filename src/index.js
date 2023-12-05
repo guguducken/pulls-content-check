@@ -25,7 +25,7 @@ async function main() {
         core.setFailed(`this request is not pull_request or the body of this pull_request is empty`);
     }
 
-    const urlReplace = /\[\w*\]\((http.*)\)/igm
+    const urlReplace = /\[.*\]\((http.*)\)/igm
 
     pullContent = pullContent.replace(urlReplace,"$1")
 
