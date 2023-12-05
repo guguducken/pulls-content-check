@@ -20,12 +20,16 @@ async function main() {
         ...github.context.repo,
         pull_number: github.context.payload.pull_request.number
     })
-    const pullContent = pull.body;
+    let pullContent = pull.body;
     if (pullContent === undefined || pullContent.length == 0) {
         core.setFailed(`this request is not pull_request or the body of this pull_request is empty`);
     }
 
-    console.log("pull content is :" + pullContent)
+    const urlReplace = /\[\w*\]\((http.*)\)/igm
+
+    pullContent = pullContent.replace(urlReplace,"$1")
+
+    core.debug("pull content is :" + pullContent)
 
     let issueIsValid = true
     let contentIsValid = true
@@ -57,7 +61,7 @@ async function main() {
 }
 
 async function checkIssueValid(issueContent) {
-    console.log("issue content is: " + chalk.greenBright(issueContent))
+    core.debug("issue content is: " + chalk.greenBright(issueContent))
 
     // check issue in this repo
     let regSlef = /#[0-9]+/igm
@@ -105,13 +109,9 @@ async function checkIssueValid(issueContent) {
 }
 
 function drumpToNextHeading(tree, ind) {
-    let content = toString(tree.children[ind],{
-        includeHtml: true,
-    });
+    let content = toString(tree.children[ind]);
     while (ind + 1 < tree.children.length && tree.children[ind + 1].type != "heading") {
-        content += " " + toString(tree.children[++ind],{
-            includeHtml: true,
-        });
+        content += " " + toString(tree.children[++ind]);
     }
     return ind, content;
 }
