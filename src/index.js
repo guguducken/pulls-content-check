@@ -63,6 +63,7 @@ async function main() {
 async function checkIssueValid(issueContent) {
     core.debug("issue content is: " + chalk.greenBright(issueContent))
 
+    // check short issue in other repo, such as matrixorigin/MO-Cloud#1
     let regOtherShort = /([a-zA-Z0-9\_\.\-]+)\/([a-zA-Z0-9\_\.\-]+)#([0-9]+)/igm
     let resultOtherShortRepo = issueContent.matchAll(regOtherShort)
     let otherShortIssue = resultOtherShortRepo.next();
@@ -79,7 +80,7 @@ async function checkIssueValid(issueContent) {
             return true
         }
         otherShortIssue = resultOtherShortRepo.next();
-        haveNext = !otherShortIssue.done;
+        haveShortNext = !otherShortIssue.done;
     }
 
     // check issue in this repo, such as #1
@@ -103,7 +104,7 @@ async function checkIssueValid(issueContent) {
         }
     }
 
-    // check issue in other repo, such as https://github.com/guguducken/matrixone/issues/1
+    // check issue in other repo, such as https://github.com/matrixorigin/matrixone/issues/1
     const regOther = /https:\/\/github.com\/([a-zA-Z0-9\-_\.]+)\/([a-zA-Z0-9\-_\.]+)\/issues\/(\d+)/igm;
     let resultOtherRepo = issueContent.matchAll(regOther)
 
