@@ -63,7 +63,26 @@ async function main() {
 async function checkIssueValid(issueContent) {
     core.debug("issue content is: " + chalk.greenBright(issueContent))
 
-    // check issue in this repo
+    let regOtherShort = /([a-zA-Z0-9\_\.\-]+)\/([a-zA-Z0-9\_\.\-]+)#([0-9]+)/igm
+    let resultOtherShortRepo = issueContent.matchAll(regOtherShort)
+    let otherShortIssue = resultOtherShortRepo.next();
+    let haveShortNext = !otherShortIssue.done;
+    while (haveShortNext) {
+        core.info(`start check other repo short issue ` + chalk.greenBright(otherShortIssue.value[0]))
+        const { data: data, status: status } = await oc.rest.issues.get({
+            owner: otherShortIssue.value[1],
+            repo: otherShortIssue.value[2],
+            issue_number: otherShortIssue.value[3]
+        });
+        if (status == 200 && data.pull_request === undefined) {
+            core.info("issue " + chalk.red(`${otherShortIssue.value[3]}`) + " in other repo " + chalk.greenBright(`${ otherShortIssue.value[1]}/${ otherShortIssue.value[2]}`) + " is valid, so return true")
+            return true
+        }
+        otherShortIssue = resultOtherShortRepo.next();
+        haveNext = !otherShortIssue.done;
+    }
+
+    // check issue in this repo, such as #1
     let regSlef = /#[0-9]+/igm
     let result = issueContent.match(regSlef)
     if (result !== null && result.length != 0) {
@@ -71,40 +90,40 @@ async function checkIssueValid(issueContent) {
         for (let i = 0; i < result.length; i++) {
             // remove prefix #
             const issue = result[i].substring(1);
-            console.log("start check issue " + chalk.red(`${issue}`) + " in this repo " + chalk.greenBright(`${github.context.repo.owner}/${github.context.repo.repo}`));
+            core.info("start check issue " + chalk.red(`${issue}`) + " in this repo " + chalk.greenBright(`${github.context.repo.owner}/${github.context.repo.repo}`));
             const { data: data, status: status } = await oc.rest.issues.get({
                 ...github.context.repo,
                 issue_number: issue
             });
             if (status == 200 && data.pull_request === undefined) {
-                console.log("issue " + chalk.red(`${issue}`) + " in this repo " + chalk.greenBright(`${github.context.repo.owner}/${github.context.repo.repo}`) + " is valid, so return true")
+                core.info("issue " + chalk.red(`${issue}`) + " in this repo " + chalk.greenBright(`${github.context.repo.owner}/${github.context.repo.repo}`) + " is valid, so return true")
                 return true
             }
 
         }
     }
 
-    // check issue in other repo
+    // check issue in other repo, such as https://github.com/guguducken/matrixone/issues/1
     const regOther = /https:\/\/github.com\/([a-zA-Z0-9\-_\.]+)\/([a-zA-Z0-9\-_\.]+)\/issues\/(\d+)/igm;
     let resultOtherRepo = issueContent.matchAll(regOther)
 
     let otherIssue = resultOtherRepo.next();
     let haveNext = !otherIssue.done;
     while (haveNext) {
-        console.log(`start check other repo issue ` + chalk.greenBright(otherIssue.value[0]))
+        core.info(`start check other repo long issue ` + chalk.greenBright(otherIssue.value[0]))
         const { data: data, status: status } = await oc.rest.issues.get({
             owner: otherIssue.value[1],
             repo: otherIssue.value[2],
             issue_number: otherIssue.value[3]
         });
         if (status == 200 && data.pull_request === undefined) {
-            console.log("issue " + chalk.red(`${otherIssue.value[3]}`) + " in other repo " + chalk.greenBright(`${ otherIssue.value[1]}/${ otherIssue.value[2]}`) + " is valid, so return true")
+            core.info("issue " + chalk.red(`${otherIssue.value[3]}`) + " in other repo " + chalk.greenBright(`${ otherIssue.value[1]}/${ otherIssue.value[2]}`) + " is valid, so return true")
             return true
         }
         otherIssue = resultOtherRepo.next();
         haveNext = !otherIssue.done;
     }
-    console.log(chalk.red("there is no valid issue, so return false"));
+    core.info(chalk.red("there is no valid issue, so return false"));
     return false
 }
 
@@ -117,10 +136,10 @@ function drumpToNextHeading(tree, ind) {
 }
 
 function checkContentValid(messageContent) {
-    console.log("pull message is: " + chalk.greenBright(messageContent));
+    core.info("pull message is: " + chalk.greenBright(messageContent));
     messageContent = messageContent.replace("debug", "").replace("fix", "").replace(/<img.*>/igm,"img").replace(/[!"#$%&'()*+,-./:;<=>?@\[\]\^_`{|}~ \\]/igm, "")
-    console.log("after replace: " + chalk.red(messageContent))
-    console.log(messageContent.length)
+    core.info("after replace: " + chalk.red(messageContent))
+    core.info(messageContent.length)
     if (messageContent.length >= 3) {
         return true
     }
