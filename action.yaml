@@ -6,6 +6,10 @@ inputs:
   github_token:
     description: 'The user GitHub token for get data'
     required: true
+  this_repo:
+    description: 'The user GitHub token for get data'
+    required: false
+    default: "matrixorigin/matrixone"
   title_for_find_issue:
     description: 'title for find issue'
     default: ""

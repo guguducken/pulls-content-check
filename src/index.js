@@ -5,9 +5,15 @@ import { fromMarkdown } from 'mdast-util-from-markdown';
 import { toString } from 'mdast-util-to-string'
 
 const githubToken = core.getInput("github_token", { required: true });
+const thisRepo = core.getInput("this_repo",{required: false})
 const oc = github.getOctokit(githubToken);
 
 async function main() {
+    if (thisRepo != `${github.context.owner}/${github.context.repo}`) {
+        core.info(`This repo is not required repo ${thisRepo}, so return true`)
+        core.setOutput("pull_valid", `true`)
+        return 
+    }
     const titleIssue = core.getInput("title_for_find_issue");
     const titleContent = core.getInput("title_for_find_content");
 
