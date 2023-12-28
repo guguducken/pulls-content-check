@@ -5,7 +5,7 @@ import { fromMarkdown } from 'mdast-util-from-markdown';
 import { toString } from 'mdast-util-to-string'
 
 const thisRepo = core.getInput("this_repo",{required: false})
-if (thisRepo != `${github.context.owner}/${github.context.repo}`) {
+if (thisRepo != `${github.context.repo.owner}/${github.context.repo.repo}`) {
     core.debug(`${github.context.owner}/${github.context.repo}`)
     core.info(`This repo is not required repo ${thisRepo}, so return true`)
     core.setOutput("pull_valid", `true`)
