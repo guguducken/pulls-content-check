@@ -8,7 +8,7 @@ const thisRepo = core.getInput("this_repo",{required: false})
 if (thisRepo != `${github.context.owner}/${github.context.repo}`) {
     core.info(`This repo is not required repo ${thisRepo}, so return true`)
     core.setOutput("pull_valid", `true`)
-    return 
+    process.exit(0); 
 }
 
 const githubToken = core.getInput("github_token", { required: true });
